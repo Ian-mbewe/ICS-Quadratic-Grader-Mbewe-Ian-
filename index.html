@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratic Solver & Grading System</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 30px; background: #f5f7fa; color: #222; }
+  h2 { color: #004085; border-bottom: 2px solid #004085; padding-bottom: 5px; }
+  label { display: block; margin-top: 10px; }
+  input[type="number"] { width: 120px; padding: 5px; margin-top: 3px; }
+  button { padding: 8px 15px; margin-top: 10px; cursor: pointer; background: #004085; color: white; border: none; border-radius: 4px; }
+  button:hover { background: #0056b3; }
+  .result { background: #fff; padding: 10px; border-radius: 5px; margin-top: 10px; border: 1px solid #ccc; display: none; }
+  .error { color: red; font-size: 0.9em; margin-top: 3px; }
+  hr { margin: 40px 0; border: none; border-top: 2px solid #ccc; }
+</style>
+</head>
+<body>
+
+<h2> Quadratic Equation Solver</h2>
+<p><b>Equation:</b> ax² + bx + c = 0</p>
+<label>a: <input type="number" id="a" step="any" placeholder="e.g. 1"></label>
+<label>b: <input type="number" id="b" step="any" placeholder="e.g. 5"></label>
+<label>c: <input type="number" id="c" step="any" placeholder="e.g. 6"></label>
+<div class="error" id="quadError"></div>
+<button onclick="solveQuadratic()">Solve</button>
+<button onclick="resetQuadratic()">Reset</button>
+<div id="quadResult" class="result"></div>
+
+<hr>
+
+<h2> Grading System</h2>
+<label>Enter Score (0–100): <input type="number" id="score" min="0" max="100" placeholder="e.g. 82"></label>
+<div class="error" id="gradeError"></div>
+<button onclick="convertGrade()">Convert</button>
+<button onclick="resetGrade()">Clear</button>
+<div id="gradeResult" class="result"></div>
+
+<script>
+// ---------- Quadratic Solver ----------
+function solveQuadratic() {
+  const a = parseFloat(document.getElementById("a").value);
+  const b = parseFloat(document.getElementById("b").value);
+  const c = parseFloat(document.getElementById("c").value);
+  const errorDiv = document.getElementById("quadError");
+  const resultDiv = document.getElementById("quadResult");
+  errorDiv.textContent = "";
+  resultDiv.style.display = "none";
+  resultDiv.innerHTML = "";
+
+
+
+  if (isNaN(a) || isNaN(b) || isNaN(c)) {
+    errorDiv.textContent = "Please enter valid numbers for a, b, and c.";
+    return;
+  }
+  if (a === 0) {
+    errorDiv.textContent = "Coefficient 'a' must not be zero.";
+    return;
+  }
+
+  const D = b * b - 4 * a * c;
+  let output = `<p><b>Discriminant (D):</b> ${D.toFixed(3)}</p>`;
+//---Control on what outputs mathematically exist-----
+  if (D > 0) {
+    const x1 = (-b + Math.sqrt(D)) / (2 * a);
+    const x2 = (-b - Math.sqrt(D)) / (2 * a);
+    output += `<p><b>Nature of roots:</b> Two distinct real roots</p>`;
+    output += `<p>x₁ = ${x1.toFixed(3)}, x₂ = ${x2.toFixed(3)}</p>`;
+  } else if (D === 0) {
+    const x = -b / (2 * a);
+    output += `<p><b>Nature of roots:</b> One real repeated root</p>`;
+    output += `<p>x = ${x.toFixed(3)}</p>`;
+  } else {
+    const realPart = (-b / (2 * a)).toFixed(3);
+    const imagPart = (Math.sqrt(-D) / (2 * a)).toFixed(3);
+    output += `<p><b>Nature of roots:</b> Two complex conjugate roots</p>`;
+    output += `<p>x₁ = ${realPart} + ${imagPart}i<br>x₂ = ${realPart} - ${imagPart}i</p>`;
+  }
+
+  resultDiv.innerHTML = output;
+  resultDiv.style.display = "block";
+}
+
+function resetQuadratic() {
+  document.getElementById("a").value = "";
+  document.getElementById("b").value = "";
+  document.getElementById("c").value = "";
+  document.getElementById("quadError").textContent = "";
+  document.getElementById("quadResult").innerHTML = "";
+  document.getElementById("quadResult").style.display = "none";
+}
+
+// ---------- Grading System ----------
+function convertGrade() {
+  const score = parseFloat(document.getElementById("score").value);
+  const errorDiv = document.getElementById("gradeError");
+  const resultDiv = document.getElementById("gradeResult");
+  errorDiv.textContent = "";
+  resultDiv.style.display = "none";
+  resultDiv.innerHTML = "";
+
+  if (isNaN(score)) {
+    errorDiv.textContent = "Please enter a numeric score.";
+    return;
+  }
+  if (score < 0 || score > 100) {
+    errorDiv.textContent = "Score must be between 0 and 100.";
+    return;
+  }
+
+  let grade;
+  if (score >= 85 && score <= 100) grade = "A+";
+  else if (score >= 75 && score <= 84) grade = "A";
+  else if (score >= 65 && score <= 74) grade = "B+";
+  else if (score >= 60 && score <= 64) grade = "B";
+  else if (score >= 55 && score <= 59) grade = "C+";
+  else if (score >= 50 && score <= 54) grade = "C";
+  else grade = "D";
+
+  resultDiv.innerHTML = `<p><b>Score ${score}</b> → Grade <b>${grade}</b></p>`;
+  resultDiv.style.display = "block";
+}
+
+function resetGrade() {
+  document.getElementById("score").value = "";
+  document.getElementById("gradeError").textContent = "";
+  document.getElementById("gradeResult").innerHTML = "";
+  document.getElementById("gradeResult").style.display = "none";
+}
+
+console.log("Script loaded!");
+
+</script>
+
+</body>
+</html>
